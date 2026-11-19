@@ -85,7 +85,7 @@ n++;
   s.addShape(pptx.ShapeType.rect, {x: 8.6, y: 0, w: 4.733, h: 7.5, fill: {color: TEAL}, line: {color: TEAL}});
   s.addShape(pptx.ShapeType.rect, {x: 8.6, y: 0, w: 0.12, h: 7.5, fill: {color: COP}, line: {color: COP}});
   s.addText('DIGITAL MEITHEAL 2026 · DAY 2 · 20 NOVEMBER · DROGHEDA', {x: 0.7, y: 0.8, w: 7.7, h: 0.35, fontFace: F, fontSize: 12, bold: true, color: COP, charSpacing: 2, margin: 0});
-  s.addText('Digital wallets & delegated authority', {x: 0.7, y: 1.3, w: 7.6, h: 1.9, fontFace: F, fontSize: 44, bold: true, color: TEAL, margin: 0, valign: 'top'});
+  s.addText('Digital wallets & Delegated authority', {x: 0.7, y: 1.3, w: 7.6, h: 1.9, fontFace: F, fontSize: 44, bold: true, color: TEAL, margin: 0, valign: 'top'});
   s.addText('How government credentials reach your phone, and how we could let you act for a parent, a child, or someone in care',
     {x: 0.7, y: 3.25, w: 7.4, h: 1.1, fontFace: F, fontSize: 18, color: MUTED, margin: 0, valign: 'top'});
   tag(s, 'DRAFT FOR DISCUSSION', 0.7, 4.5);
@@ -191,7 +191,7 @@ section('02', "Ireland's Government Digital Wallet", 'Consultation and testing l
   s.addText('Announced', {x: 1.55, y: 1.72, w: 5, h: 0.55, fontFace: F, fontSize: 18, bold: true, color: TEAL, margin: 0, valign: 'middle'});
   s.addText(bullets([
     [{text: '3 Apr 2026: ', bold: true}, {text: 'Minister Jack Chambers and Minister of State Frank Feighan launch a public consultation and testing phase (consultation closed 24 Jun 2026)'}],
-    [{text: 'Phased: ', bold: true}, {text: 'pilot with about 1,000 civil servants, then an invitation-only beta, then a wider launch planned later in 2026'}],
+    [{text: 'Phased: ', bold: true}, {text: 'pilot with about 1,000 civil servants, then an invitation-only beta, then a wider launch planned by Dec 24th 2026'}],
     [{text: 'Identity: ', bold: true}, {text: 'built on MyGovID verified identity (in-person verification to SAFE 2)'}],
     [{text: 'First credentials: ', bold: true}, {text: 'birth certificate, driving licence, European Health Insurance Card, and age verification for the Online Safety Code'}],
     [{text: 'Privacy: ', bold: true}, {text: 'selective disclosure and explicit consent each time you share'}],
@@ -351,7 +351,7 @@ video('Government credentials', 'Signing in to government services', 'SignIn', 4
 /* ---------- 04 Adults ---------- */
 section('04', 'Delegation: adults', 'Acting for an elderly parent or someone who needs support, without sharing their phone or PIN.');
 {
-  const s = base('Delegation: adults', 'Today: everyone shares passwords');
+  const s = base('Delegation: adults', 'In Ireland today: everyone shares passwords');
   const cs = [
     ['IE', 'Ireland', [
       'Enduring powers of attorney and co-decision registered with the Decision Support Service (ADMCA 2015)',
@@ -389,33 +389,6 @@ section('04', 'Delegation: adults', 'Acting for an elderly parent or someone who
 }
 video('Delegation: adults', 'Proposal: a mandate credential in the wallet', 'Adult', 500,
   'Mary, 82, has an enduring power of attorney registered with the Decision Support Service. A proposed representation attestation provider issues Seán a mandate credential, scoped to pensions and bound to his own PID. Services always see that he is acting as a representative and for what (ARF Topic I). Mary can withdraw it, or Seán can step down, and status lists stop it everywhere.', {draft: true});
-{
-  const s = base('Delegation: adults', 'Designing the mandate credential', {draft: true});
-  card(s, 0.6, 1.5, 5.95, 5.2);
-  s.addText("WHAT'S INSIDE", {x: 0.9, y: 1.72, w: 5, h: 0.3, fontFace: F, fontSize: 11, bold: true, color: COP, charSpacing: 2, margin: 0});
-  const fields = [['representative', "bound to the representative's own PID"], ['principal', 'minimal claims about the person represented'], ['scope', 'pensions · health · banking · tax · all'], ['legal_basis', 'EPA · co-decision · consent · court'], ['source_authority', 'DSS, Courts, or the principal'], ['status', 'Token Status List entry']];
-  fields.forEach(([k, v], i) => {
-    const y = 2.15 + i * 0.72;
-    s.addText(k, {x: 0.9, y, w: 2.1, h: 0.52, fontFace: MONO, fontSize: 12, color: TEAL, bold: true, margin: 0.08, valign: 'middle', shape: pptx.ShapeType.roundRect, rectRadius: 0.06, fill: {color: ACC}});
-    s.addText(v, {x: 3.15, y, w: 3.25, h: 0.52, fontFace: F, fontSize: 12.5, color: MUTED, margin: 0, valign: 'middle'});
-  });
-  card(s, 6.78, 1.5, 5.95, 5.2);
-  s.addText('LIFECYCLE RULES', {x: 7.08, y: 1.72, w: 5, h: 0.3, fontFace: F, fontSize: 11, bold: true, color: COP, charSpacing: 2, margin: 0});
-  const rules = [
-    ['clock', 'Legal validity ≠ technical expiry', 'An EPA can run for years (Estonian mandates can be open-ended). The credential expires in 30 days or less and refreshes silently while the mandate stands.'],
-    ['ban', 'Anyone with a stake can end it', 'The principal withdraws, the representative steps down (as in Pääsuke), or the DSS or a court revokes it.'],
-    ['eye', 'Representation is never hidden', 'The service sees the person is acting for someone else and for what (ARF Topic I).'],
-    ['list', 'An activity log for the principal', 'Mary can see what was done in her name.'],
-  ];
-  rules.forEach(([ic, t, d], i) => {
-    const y = 2.15 + i * 1.12;
-    tile(s, ic, 'sky', 7.08, y, 0.5);
-    s.addText(t, {x: 7.75, y: y - 0.02, w: 4.8, h: 0.32, fontFace: F, fontSize: 13.5, bold: true, color: TEAL, margin: 0});
-    s.addText(d, {x: 7.75, y: y + 0.3, w: 4.8, h: 0.75, fontFace: F, fontSize: 11.5, color: MUTED, margin: 0, valign: 'top'});
-  });
-  s.addNotes('Short technical lifetimes keep revocation fast and limit the damage from a stolen phone. The legal mandate is separate and can be open-ended, which is how Estonia handles long-running authorisations.');
-}
-
 video('Delegation: adults', 'Self-granted: Bob lets Alice manage his prescriptions', 'SelfGrant', 660,
   'Not every delegation needs a court or the DSS. Bob, 74, has full capacity and simply wants his daughter Alice to help. In his own wallet he picks Alice, who has verified with her own PID, and ticks what she may do: view his prescriptions and medicines, order repeats and collect them. GP notes, test results and everything outside health stay excluded. His explicit consent is the legal basis (GDPR Art. 9(2)(a) for health data). This is the same pattern as an Estonian Pääsuke authorisation a person grants for themselves. Alice signs in to the HSE service as herself, shown as acting for Bob. The pharmacy checks her mandate when she collects. Bob sees an activity log and can withdraw at any time.', {draft: true});
 {
@@ -453,6 +426,33 @@ video('Delegation: adults', 'Self-granted: Bob lets Alice manage his prescriptio
   s.addText('Consent depends on capacity', {x: 8.03, y: 5.12, w: 4.5, h: 0.32, fontFace: F, fontSize: 13.5, bold: true, color: COP, margin: 0});
   s.addText('If Bob loses capacity, a consent-based mandate should lapse. He would then need an enduring power of attorney registered with the DSS (ADMCA 2015). Bob could set that up now, alongside this grant.', {x: 8.03, y: 5.45, w: 4.55, h: 1.15, fontFace: F, fontSize: 11.5, color: MUTED, margin: 0, valign: 'top'});
   s.addNotes('Illustrative only: no Irish schema exists. The design keeps the long legal mandate (12 months, renewable) separate from a short technical credential lifetime, and lists excluded actions explicitly so relying parties do not have to infer them. Each HSE or pharmacy system enforces the scopes. The capacity caveat matters: a voluntary mandate is not a substitute for an EPA under the Assisted Decision-Making (Capacity) Act 2015.');
+}
+
+{
+  const s = base('Delegation: adults', 'Designing the mandate credential', {draft: true});
+  card(s, 0.6, 1.5, 5.95, 5.2);
+  s.addText("WHAT'S INSIDE", {x: 0.9, y: 1.72, w: 5, h: 0.3, fontFace: F, fontSize: 11, bold: true, color: COP, charSpacing: 2, margin: 0});
+  const fields = [['representative', "bound to the representative's own PID"], ['principal', 'minimal claims about the person represented'], ['scope', 'pensions · health · banking · tax · all'], ['legal_basis', 'EPA · co-decision · consent · court'], ['source_authority', 'DSS, Courts, or the principal'], ['status', 'Token Status List entry']];
+  fields.forEach(([k, v], i) => {
+    const y = 2.15 + i * 0.72;
+    s.addText(k, {x: 0.9, y, w: 2.1, h: 0.52, fontFace: MONO, fontSize: 12, color: TEAL, bold: true, margin: 0.08, valign: 'middle', shape: pptx.ShapeType.roundRect, rectRadius: 0.06, fill: {color: ACC}});
+    s.addText(v, {x: 3.15, y, w: 3.25, h: 0.52, fontFace: F, fontSize: 12.5, color: MUTED, margin: 0, valign: 'middle'});
+  });
+  card(s, 6.78, 1.5, 5.95, 5.2);
+  s.addText('LIFECYCLE RULES', {x: 7.08, y: 1.72, w: 5, h: 0.3, fontFace: F, fontSize: 11, bold: true, color: COP, charSpacing: 2, margin: 0});
+  const rules = [
+    ['clock', 'Legal validity ≠ technical expiry', 'An EPA can run for years (Estonian mandates can be open-ended). The credential expires in 30 days or less and refreshes silently while the mandate stands.'],
+    ['ban', 'Anyone with a stake can end it', 'The principal withdraws, the representative steps down (as in Pääsuke), or the DSS or a court revokes it.'],
+    ['eye', 'Representation is never hidden', 'The service sees the person is acting for someone else and for what (ARF Topic I).'],
+    ['list', 'An activity log for the principal', 'Mary can see what was done in her name.'],
+  ];
+  rules.forEach(([ic, t, d], i) => {
+    const y = 2.15 + i * 1.12;
+    tile(s, ic, 'sky', 7.08, y, 0.5);
+    s.addText(t, {x: 7.75, y: y - 0.02, w: 4.8, h: 0.32, fontFace: F, fontSize: 13.5, bold: true, color: TEAL, margin: 0});
+    s.addText(d, {x: 7.75, y: y + 0.3, w: 4.8, h: 0.75, fontFace: F, fontSize: 11.5, color: MUTED, margin: 0, valign: 'top'});
+  });
+  s.addNotes('Short technical lifetimes keep revocation fast and limit the damage from a stolen phone. The legal mandate is separate and can be open-ended, which is how Estonia handles long-running authorisations.');
 }
 
 /* ---------- 05 Children ---------- */
@@ -566,10 +566,10 @@ section('06', 'Gaps, prototype & discussion', 'What the standards still need, ho
   const cols = [
     ['users', 'sky', 'WALLET TO WALLET', 'Delegated authority', 'For people and organisations that hold a wallet and can be legally accountable.', [
       'Mandate bound to the representative\'s PID', 'A legal basis: consent, EPA, court', 'Revocable through the status list']],
-    ['list', 'copper', 'REUSE', 'Familiar for the user', 'Granting access to an agent should feel like granting it to Alice.', [
-      'Choose who, tick scopes, list exclusions', 'Time limit, and withdraw at any time', 'Activity log, with "acting for you" always shown']],
+    ['list', 'copper', 'REUSE', 'Familiar for the user', 'Granting access to an agent should feel like granting it to another person.', [
+      'Choose the agent, tick scopes, list exclusions', 'Time limit, and withdraw at any time', 'Activity log, with "acting for you" always shown']],
     ['sparkles', 'sky', 'DIFFERENT PLUMBING', 'Your AI agents', 'An agent is not a legal person: it gets no PID or mandate, and you stay accountable.', [
-      'Grant bound to the agent instance\'s key', 'Limits on rate and value; step-up to you', 'Sub-delegation depth; human-only actions']],
+      'Grant bound to the agent instance\'s key', 'Limits on rate and value; step-up to you', 'Sub-delegation depth;', 'Human-only actions']],
   ];
   cols.forEach(([ic, col, k, t, d, pts], i) => {
     const x = 0.6 + i * 4.12, mid = i === 1;
@@ -731,8 +731,6 @@ n++;
     {text: 'martin@woodwardweb.com', options: {color: '40BCEB', hyperlink: {url: 'mailto:martin@woodwardweb.com'}}},
   ], {x: 0.9, y: 3.9, w: 6, h: 0.9, fontFace: F, fontSize: 18, margin: 0});
   tag(s, 'DRAFT FOR DISCUSSION', 0.9, 5.1);
-  s.addShape(pptx.ShapeType.roundRect, {x: 9.6, y: 5.55, w: 3.15, h: 1.35, rectRadius: 0.12, fill: {color: WHITE}, line: {color: WHITE}});
-  s.addImage({path: img('eu2026'), x: 9.75, y: 5.62, w: 2.85, h: 2.85 * 1276 / 2787});
   footer(s, true);
 }
 
