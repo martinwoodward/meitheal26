@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Person-to-Person Representation in the EUDI Wallet — Prototype Plan</title>
+<style>
+@page { size: A4; margin: 11mm 14mm 10mm 14mm; }
+body { font: 9.2pt/1.32 -apple-system, "Helvetica Neue", Arial, sans-serif; color:#1f2328; }
+h1 { font-size: 19pt; margin: 0 0 2px; color:#0b3d91; }
+.sub { color:#57606a; margin:0 0 4px; font-size:10.5pt }
+.meta { color:#57606a; font-size:9pt; border-bottom:2px solid #0b3d91; padding-bottom:6px; margin-bottom:10px }
+h2 { font-size: 11.5pt; color:#0b3d91; margin: 8px 0 3px; border-bottom:1px solid #d0d7de; padding-bottom:2px; break-after: avoid; }
+p { margin: 4px 0 6px; }
+ul { margin: 2px 0 6px 0; padding-left: 18px; } li { margin: 1px 0; }
+table { border-collapse: collapse; width:100%; font-size:9pt; margin:4px 0 8px; break-inside: avoid; }
+th, td { border:1px solid #d0d7de; padding:3px 6px; text-align:left; vertical-align:top; }
+th { background:#eef3fb; }
+code { font: 8.5pt Menlo, monospace; background:#f3f4f6; padding:0 2px; border-radius:3px }
+.box { background:#f6f8fa; border-left:3px solid #0b3d91; padding:6px 10px; margin:6px 0; }
+.arch { font: 8pt Menlo, monospace; white-space: pre; background:#f6f8fa; padding:8px; border-radius:4px; line-height:1.3 }
+.two { display:flex; gap:14px; break-inside: avoid } .two > div { flex:1 }
+a { color:#0b3d91; text-decoration:none; border-bottom:0.5pt dotted #0b3d91 }
+.refs { font-size:8.2pt; padding-left:16px } .refs li { margin:1px 0 } .refs .u { color:#57606a; font-size:7.4pt; word-break:break-all }
+.foot { margin-top:12px; font-size:8pt; color:#57606a; border-top:1px solid #d0d7de; padding-top:4px }
+</style></head><body>
+
+<h1>Person-to-Person Representation in the EUDI Wallet</h1>
+<p class="sub">Prototype plan — acting on behalf of a child, an elderly relative or another adult</p>
+<p class="meta"><b>Prepared by Martin Woodward</b> · <a href="mailto:martin@woodwardweb.com">martin@woodwardweb.com</a> · 19 November 2026 · Draft for discussion</p>
+
+<h2>1. Why this matters</h2>
+<p>eIDAS 2 (<a href="https://eur-lex.europa.eu/eli/reg/2024/1183/oj">Regulation (EU) 2024/1183</a>) explicitly covers <i>“a natural person representing another natural person”</i>, and Annex VI lists <i>powers and mandates to represent</i> as attributes Member States must make verifiable. The ARF has a design paper (<a href="https://eudi.dev/latest/discussion-topics/i-natural-person-representing-another-natural-person/">Topic I, v0.4</a>) but <b>no attestation rulebook exists yet</b> — the <a href="https://github.com/eu-digital-identity-wallet/eudi-doc-attestation-rulebooks-catalog">official catalogue</a> holds only the PID and mobile driving licence rulebooks. National wallets are due by 24 Dec 2026, so representation will arrive after launch.</p>
+<p>Today, delegation lives in national portals, not wallets: Estonia’s <a href="https://www.ria.ee/en/state-information-system/personal-services/authorisations-management-paasuke"><b>Pääsuke</b></a> (central mandate registry on <a href="https://www.eesti.ee/eraisik/en/volitused">eesti.ee</a>, queried live over <a href="https://github.com/e-gov/PH/blob/main/spec/P%C3%A4%C3%A4suke-xroad-services-spec-v1.0.3.pdf">X-Road</a>, open-ended mandates), Latvia’s portal authorisations (limited), and Australia’s per-agency myGov nominees. The new EU <a href="https://www.consilium.europa.eu/en/press/press-releases/2026/11/19/council-greenlights-new-eu-rules-to-protect-vulnerable-adults/"><b>Protection of Adults Regulation</b></a> (adopted by the Council 19 Nov 2026) adds an EU certificate of representation — a natural future input.</p>
+
+<h2>2. Goal &amp; requirements</h2>
+<p>Build an end-to-end prototype where an <b>agent</b> holds a <i>Representation Attestation</i> in their own wallet and a <b>relying party</b> always knows it is dealing with a representative.</p>
+<table>
+<tr><th style="width:42%">ARF Topic I requirement</th><th>Prototype approach</th></tr>
+<tr><td>Distinct attestation type</td><td>New SD-JWT VC type <code>urn:eudi:representation:proto:1</code></td></tr>
+<tr><td>Nature and scope stated; cannot be concealed</td><td>Principal, representation type and scope are always-disclosed claims</td></tr>
+<tr><td>Short-lived or revocable by all entitled parties</td><td>Token Status List + short-lived credential copies, auto-refreshed</td></tr>
+<tr><td>RP always aware of representation</td><td>RP explicitly requests it; wallet shows “Acting on behalf of …”</td></tr>
+<tr><td>Parent/child from authentic sources; PoA by explicit consent</td><td>Two issuance paths: register-derived and consent-derived</td></tr>
+<tr><td>Combined presentation (Topic K)</td><td>DCQL <code>credential_sets</code>: agent PID + representation attestation</td></tr>
+</table>
+
+<h2>3. Architecture</h2>
+<div class="arch">Principal wallet ──(PID via OpenID4VP: grant / revoke)──▶ Representation Attestation Provider (RAP)
+                                                           • mandate registry (Pääsuke-like)
+Agent wallet ◀──(OpenID4VCI + PID during issuance)──────▶   • mock population register
+     │                                                     • Token Status List
+     └──(OpenID4VP / DC API: agent PID + representation)──▶ Demo relying party (health / social care)</div>
+<ul>
+<li><b>Wallet:</b> fork of <a href="https://github.com/animo/paradym-wallet"><b>Paradym Wallet</b></a> (Apache-2.0; Expo/React Native; Credo). It already supports PID presentation <i>during</i> issuance, DCQL credential sets, ETSI TS 119 602 trusted lists, SD-JWT VC type metadata and transaction data — the hardest building blocks.</li>
+<li><b>RAP and RP:</b> Node services on Credo (<code>@credo-ts/openid4vc</code>) — same stack as the wallet.</li>
+<li><b>Trust:</b> local trusted list naming the RAP and the demo RP.</li>
+</ul>
+
+<h2>4. The credential</h2>
+<div class="two"><div>
+<ul>
+<li><b>representation_type:</b> voluntary mandate · power of attorney · guardian of minor · guardian of adult</li>
+<li><b>legal_basis:</b> consent · population register · court order (later: EU certificate)</li>
+<li><b>principal:</b> name, birth date, pseudonymous identifier</li>
+<li><b>scope:</b> domain + actions, e.g. <code>health: read_records</code></li>
+<li><b>representative:</b> claims matching the agent’s PID, plus wallet key binding</li>
+</ul></div><div>
+<div class="box"><b>Two validity periods.</b><br>
+<b>Mandate validity</b> = the legal authority; may be open-ended (as Pääsuke allows: <a href="https://github.com/e-gov/PH/blob/main/spec/P%C3%A4%C3%A4suke-xroad-services-spec-v1.0.3.pdf"><code>ValidityPeriod.through</code> = null</a> means indefinite).<br>
+<b>Credential expiry</b> = technical lifetime of the wallet copy; short (e.g. ≤ 30 days, a prototype choice) and silently refreshed while the mandate is active. This approximates Pääsuke’s live lookup while still working offline.</div>
+</div></div>
+
+<h2>5. Key flows</h2>
+<table>
+<tr><th style="width:24%">Flow</th><th>Summary</th></tr>
+<tr><td><b>F1</b> Grant (elderly relative)</td><td>Principal logs into RAP portal with wallet, chooses agent, scope and dates, confirms with a signed transaction; agent receives an invite.</td></tr>
+<tr><td><b>F2</b> Accept</td><td>Agent opens invite → OpenID4VCI; RAP requests agent’s PID during issuance, checks match, issues key-bound attestation.</td></tr>
+<tr><td><b>F3</b> Parent / guardian of minor</td><td>A legal event (birth, adoption, guardianship or care order) updates authoritative sources; guardian collects one attestation per child with their PID. Valid to 18 unless restricted or revoked (see §6).</td></tr>
+<tr><td><b>F4</b> Act at a service</td><td>RP requests PID <i>or</i> PID + representation. Wallet shows “Acting on behalf of …” with a picker if several. RP checks trust, signatures, status, binding and scope.</td></tr>
+<tr><td><b>F5</b> Revoke</td><td>Principal withdraws, agent waives, or authority revokes (register/court) → status list updated; refresh stops. Mirrors Pääsuke’s <a href="https://github.com/e-gov/PH/blob/main/spec/P%C3%A4%C3%A4suke-xroad-services-spec-v1.0.3.pdf">DELETE_WITHDRAW / DELETE_WAIVE</a>.</td></tr>
+</table>
+
+<h2>6. Child authorisations — options (Ireland as worked example)</h2>
+<p><b>Key constraint: parentage ≠ guardianship.</b> The GRO registers births, marriages and adoptions, but an unmarried father on the birth certificate is <i>not</i> automatically a guardian. He becomes one through 12 months’ cohabitation incl. 3 with the child (<a href="https://www.irishstatutebook.ie/eli/2015/act/9/section/49">CFRA 2015 s.49</a>), a joint statutory declaration, or a court order — none of which is centrally registered. Under a care order (<a href="https://www.irishstatutebook.ie/eli/1991/act/17/section/18/enacted/en/html">Child Care Act 1991 s.18</a>) Tusla can consent to medical treatment and passports; parents remain guardians but their powers are restricted in practice.</p>
+<table>
+<tr><th style="width:21%">Option</th><th>How it works</th><th style="width:30%">Trade-offs</th></tr>
+<tr><td><b>A. GRO issues at life event</b></td><td>On birth registration, marriage or Adopted Children Register entry, GRO issues <code>legal_guardian_minor</code> to each guardian, valid to 18. <b>A+</b>: statutory declarations lodged with GRO.</td><td>Simplest; covers most children from day one. Misses court orders and care.</td></tr>
+<tr><td><b>B. New guardianship register</b></td><td>One register combining GRO, Courts Service, declarations and Tusla, feeding a single issuer (Estonia/Latvia-style).</td><td>One clear answer; needs new law and data-sharing.</td></tr>
+<tr><td><b>C. Each authority issues</b></td><td>GRO, Courts Service and Tusla each issue their own credential; the RP reconciles them.</td><td>No new register; RPs must resolve conflicts; revocation split across issuers.</td></tr>
+<tr><td><b>D. Hybrid (recommended)</b></td><td>GRO <b>baseline</b> (A+) plus Courts/Tusla <b>overlays</b>: issue to Tusla, social workers, foster carers or court guardians, and <i>narrow</i> a parent’s scope via a shared restriction/status service.</td><td>Incremental and legally accurate; needs an agreed restriction model.</td></tr>
+<tr><td><b>E. Migrants &amp; foreign-born children</b></td><td>Ireland has no population register. Immigration registration starts only at 16, EU citizens don’t register, and children born abroad are never in the GRO. Add an <b>evidence route</b>: another member state’s guardianship attestation, apostilled foreign certificates or orders verified by a caseworker (provisional → confirmed), and DSP PPS / Child Benefit links as supporting evidence only. Model it with the <a href="https://github.com/openid/eKYC-IDA-Authority/tree/main/DA%20Framework">OpenID DA Framework</a>.</td><td>Covers people the registers miss; lower assurance until verified; depends on recognition under the Hague 1996 Convention or EU law.</td></tr>
+</table>
+<div class="box"><b>Adopt from the <a href="https://github.com/openid/eKYC-IDA-Authority/tree/main/DA%20Framework">OpenID eKYC &amp; IDA DA Framework</a> (draft):</b> <code>guardian-dependent</code> relationship type; trigger-based expiry (<code>expires_on_event</code>: age 18, order ends); transfer with continuity (<code>successor_rel_jti</code>) so placement changes leave no protection gap; precedence among concurrent holders; graduated authority by age band; and its <a href="https://github.com/openid/eKYC-IDA-Authority/blob/main/DA%20Framework/privacy_preserving_profile.md">Privacy-Preserving Profile</a> (the RP learns “authorised”, not care status, number of children or legal basis). An early, AI-assisted draft, JWT-based — use as a design reference, not a spec.</div>
+<ul>
+<li><b>Scope tiers:</b> <code>guardian_full</code>, <code>day_to_day_care</code>, <code>medical_consent</code>, <code>passport_consent</code>, <code>education</code>. Foster carers typically get day-to-day; s.43A orders can extend it.</li>
+<li><b>Lifecycles:</b> emergency (8 days) and interim care orders map to short mandates; voluntary care leaves parents in charge; discharge restores scope; all end at 18.</li>
+<li><b>Safeguarding:</b> a restricted parent must never learn the placement, school or address — “minimal disclosure” mode for principal claims.</li>
+<li><b>Child’s voice:</b> from 16, the child could see who holds authority over them. <b>Prototype:</b> mock GRO, Courts, Tusla and foreign-evidence feeds; Phase 6 grows to 2 weeks.</li>
+</ul>
+
+<h2>7. Wallet changes (Paradym fork, behind a feature flag)</h2>
+<ul>
+<li>Distinct representation card and detail screen (principal, type, scope, validity, status)</li>
+<li>“Acting on behalf of …” presentation banner and a “who are you acting for?” picker</li>
+<li>Revocation/expiry display and silent re-issuance of short-lived copies</li>
+<li>Activity log entries (“Acted for X at Y”); “Authorisations I’ve given” (v1 portal link, v2 native)</li>
+</ul>
+
+<h2>8. Plan — about 11–13 weeks, 2–3 engineers</h2>
+<table>
+<tr><th>Phase</th><th>Wks</th><th>Outcome</th></tr>
+<tr><td>0. Setup</td><td>1</td><td>Fork builds on iOS/Android; test PIDs in two wallets; local trust list</td></tr>
+<tr><td>1. Draft rulebook</td><td>1</td><td>Schema, scope vocabulary, type metadata, binding decision</td></tr>
+<tr><td>2. RAP issuer</td><td>2</td><td>Issuer with PID-during-issuance, mandate registry, grant portal, status list</td></tr>
+<tr><td>3. Wallet receive &amp; display</td><td>2</td><td>F2 working; representation card; status shown</td></tr>
+<tr><td>4. Demo RP &amp; presentation</td><td>2</td><td>F4 end-to-end with combined presentation</td></tr>
+<tr><td>5. Lifecycle</td><td>1</td><td>Revocation by all parties, refresh, activity log</td></tr>
+<tr><td>6. Minors &amp; care system</td><td>2</td><td>Option D: GRO baseline, Courts/Tusla overlays, scope restriction, safeguarding mode, expiry at 18</td></tr>
+<tr><td>7. Evaluate &amp; publish</td><td>1–2</td><td>Usability tests (incl. older users), threat model, feedback to <a href="https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/discussions/495">ARF discussion #495</a>, draft rulebook PR</td></tr>
+</table>
+<p><b>Success tests:</b> scoped access works and out-of-scope is rejected; revocation takes effect at next check; parent picks the right child; credential rejected with someone else’s PID; representation never disclosed when only PID is requested.</p>
+
+<h2>9. Open questions for discussion</h2>
+<ul>
+<li><b>Binding:</b> key binding + PID match vs. Wallet Unit Attestation binding — the ARF does not yet specify.</li>
+<li><b>Consent evidence:</b> is a wallet-signed transaction enough for a power of attorney, or is a QES required nationally?</li>
+<li><b>Principal privacy:</b> what principal data RPs really need; sector-specific pseudonyms?</li>
+<li><b>Older minors:</b> should a 15+ child with their own wallet see or approve a parent’s attestation?</li>
+<li><b>Authority sources:</b> plug in Pääsuke (Estonia; mandates are <i>informative, not constitutive</i> — see its <a href="https://e-gov.github.io/PH-Doku/oigusraamistik">legal framework</a>) and national registers; cross-border recognition via the Protection of Adults Regulation.</li>
+<li><b>Engineering:</b> Paradym tracks alpha Credo builds — pin versions; rebrand per Apache-2.0 obligations.</li>
+</ul>
+
+<h2>References</h2>
+<p style="margin:2px 0"><b>EU</b></p>
+<ol class="refs">
+<li><a href="https://eur-lex.europa.eu/eli/reg/2024/1183/oj">Regulation (EU) 2024/1183 (eIDAS 2) — European Digital Identity Framework</a> — Art. 5a; Annex VI pt 9 “powers and mandates to represent”</li>
+<li><a href="https://eur-lex.europa.eu/eli/reg_impl/2024/2977/oj">Implementing Regulation (EU) 2024/2977 — PID and electronic attestations of attributes</a></li>
+<li><a href="https://eudi.dev/latest/discussion-topics/i-natural-person-representing-another-natural-person/">EUDI ARF Discussion Topic I — Natural person representing another natural person</a> · <a href="https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/discussions/495">ARF GitHub discussion #495</a></li>
+<li><a href="https://github.com/eu-digital-identity-wallet/eudi-doc-attestation-rulebooks-catalog">EUDI attestation rulebooks catalogue</a> · <a href="https://github.com/webuild-consortium/webuild-attestation-rulebooks-catalog/tree/main/rulebooks/rb-poa-pox">WeBUILD power-of-attorney rulebook (legal persons)</a></li>
+<li><a href="https://www.consilium.europa.eu/en/press/press-releases/2026/11/19/council-greenlights-new-eu-rules-to-protect-vulnerable-adults/">Council of the EU, 19 Nov 2026 — new EU rules to protect vulnerable adults (European certificate of representation)</a></li>
+</ol>
+<p style="margin:2px 0"><b>Estonia — Pääsuke</b></p>
+<ol class="refs" start="6">
+<li><a href="https://www.ria.ee/en/state-information-system/personal-services/authorisations-management-paasuke">RIA — Authorisations management (Pääsuke)</a> · <a href="https://www.eesti.ee/eraisik/en/volitused">eesti.ee — Authorisations (citizen view)</a></li>
+<li><a href="https://github.com/e-gov/PH/blob/main/spec/P%C3%A4%C3%A4suke-xroad-services-spec-v1.0.3.pdf">Pääsuke X-Road services specification v1.0.3</a> — <code>ValidityPeriod</code>, <code>NAT_REPRIGHT</code>, withdraw/waive, role validity flags</li>
+<li><a href="https://e-gov.github.io/PH-Doku/">Pääsuke developer documentation (PH-Doku)</a> · <a href="https://e-gov.github.io/PH-Doku/oigusraamistik">Legal framework (ET)</a> · <a href="https://www.ria.ee/sites/default/files/documents/2024-03/Paasuke_uldtingimused.pdf">Terms of use (ET, PDF)</a></li>
+<li><a href="https://e-gov.github.io/GOVSSO/Representee">GovSSO — representee list for services</a> · <a href="https://www.ria.ee/en/state-information-system/electronic-identity-eid-and-trust-services/eudi-wallet">RIA — Estonian EUDI Wallet programme</a></li>
+<li><a href="https://www.riigiteataja.ee/en/akt/514112013001">Public Information Act</a> (§ 43<sup>10</sup> authorisations database) · <a href="https://www.riigiteataja.ee/en/akt/523012025003">General Part of the Civil Code Act</a> (authorisation &amp; withdrawal)</li>
+</ol>
+<p style="margin:2px 0"><b>Ireland · standards · code</b></p>
+<ol class="refs" start="11">
+<li><a href="https://github.com/openid/eKYC-IDA-Authority/tree/main/DA%20Framework">OpenID eKYC &amp; IDA — Delegated Authority Framework</a>: <a href="https://github.com/openid/eKYC-IDA-Authority/blob/main/DA%20Framework/reference_architecture.md">Reference Architecture</a> · <a href="https://github.com/openid/eKYC-IDA-Authority/blob/main/DA%20Framework/privacy_preserving_profile.md">Privacy-Preserving Profile</a> · <a href="https://github.com/openid/eKYC-IDA-Authority/blob/main/DA%20Framework/stress_test_child_guardianship.md">Child guardianship stress test</a></li>
+<li><a href="https://www.irishimmigration.ie/registering-your-immigration-permission/how-to-register-your-immigration-permission-for-the-first-time/registration-requirements-for-minors/">Immigration Service Delivery — minors’ registration</a> · <a href="https://www.hcch.net/en/instruments/conventions/full-text/?cid=70">HCCH 1996 Child Protection Convention</a></li>
+<li><a href="https://www.irishstatutebook.ie/eli/2015/act/9/section/49">Children and Family Relationships Act 2015, s.49</a> · <a href="https://www.irishstatutebook.ie/eli/1991/act/17/section/18/enacted/en/html">Child Care Act 1991, s.18</a></li>
+<li><a href="https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html">OpenID4VCI 1.0</a> · <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html">OpenID4VP 1.0</a> · <a href="https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/">SD-JWT VC</a> · <a href="https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/">Token Status List</a></li>
+<li><a href="https://github.com/animo/paradym-wallet">animo/paradym-wallet (Apache-2.0)</a></li>
+</ol>
+<p class="foot">Contact: Martin Woodward · <a href="mailto:martin@woodwardweb.com">martin@woodwardweb.com</a></p>
+</body></html>

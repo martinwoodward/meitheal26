@@ -1,0 +1,23 @@
+{
+  "name": "meitheal26-deck",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED", "private": true,
+  "description": "",
+  "dependencies": {
+    "@remotion/cli": "^4.1.0-alpha9",
+    "@remotion/google-fonts": "^4.1.0-alpha9",
+    "jszip": "^3.10.2",
+    "lucide-static": "^1.72.0",
+    "pptxgenjs": "^4.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.1.0-alpha9",
+    "sharp": "^0.35.5"
+  }
+}
