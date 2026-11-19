@@ -20,6 +20,8 @@ How digital identity wallets work, Ireland's Government Digital Wallet, governme
 
 ## Licence
 
-© 2026 Martin Woodward. Licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) — see [LICENSE](LICENSE). You may share and adapt this material, including commercially, as long as you give appropriate credit.
+© 2026 Martin Woodward. Content (slides, plan, documents and videos) is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) — see [LICENSE](LICENSE). You may share and adapt it, including commercially, with appropriate credit.
+
+Code in [`delegated-authority/source/`](delegated-authority/source/) and code samples in the documents (such as the credential and request JSON) are also available under the [MIT License](https://opensource.org/license/mit), at your choice.
 
 Third-party material is excluded and remains under its own terms: the Ireland EU Presidency 2026 associated-event logo (`eu2026.png`), [Lucide](https://lucide.dev/) icons (ISC licence), and the Bricolage Grotesque and Poppins fonts (SIL Open Font License). Linked legislation, standards and documents belong to their respective owners.

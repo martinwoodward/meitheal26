@@ -562,6 +562,41 @@ section('06', 'Gaps, prototype & discussion', 'What the standards still need, ho
   s.addNotes('These ten points came out of the analysis. Items 1 and 2 are the most important: a binding profile for the EUDI stack, and resolving the conflict between the privacy-preserving profile and the ARF expectation that representation is visible.');
 }
 {
+  const s = base('Looking ahead', 'Delegated authority and AI agents', {draft: true});
+  const cols = [
+    ['users', 'sky', 'WALLET TO WALLET', 'Delegated authority', 'For people and organisations that hold a wallet and can be legally accountable.', [
+      'Mandate bound to the representative\'s PID', 'A legal basis: consent, EPA, court', 'Revocable through the status list']],
+    ['list', 'copper', 'REUSE', 'Familiar for the user', 'Granting access to an agent should feel like granting it to Alice.', [
+      'Choose who, tick scopes, list exclusions', 'Time limit, and withdraw at any time', 'Activity log, with "acting for you" always shown']],
+    ['sparkles', 'sky', 'DIFFERENT PLUMBING', 'Your AI agents', 'An agent is not a legal person: it gets no PID or mandate, and you stay accountable.', [
+      'Grant bound to the agent instance\'s key', 'Limits on rate and value; step-up to you', 'Sub-delegation depth; human-only actions']],
+  ];
+  cols.forEach(([ic, col, k, t, d, pts], i) => {
+    const x = 0.6 + i * 4.12, mid = i === 1;
+    card(s, x, 1.5, 3.89, 3.75, mid ? {fill: 'FBF3EE', line: 'E8C9B5'} : {});
+    tile(s, ic, col, x + 0.3, 1.75, 0.6, mid ? 'F3DED1' : ACC);
+    s.addText(k, {x: x + 1.05, y: 1.75, w: 2.7, h: 0.25, fontFace: F, fontSize: 10, bold: true, color: mid ? COP : SKY, charSpacing: 2, margin: 0});
+    s.addText(t, {x: x + 1.05, y: 2.0, w: 2.75, h: 0.4, fontFace: F, fontSize: 15, bold: true, color: TEAL, margin: 0, fit: 'shrink'});
+    s.addText(d, {x: x + 0.3, y: 2.6, w: 3.35, h: 0.75, fontFace: F, fontSize: 12, color: MUTED, margin: 0, valign: 'top'});
+    s.addText(pts.map((p, j) => ({text: p, options: {bullet: {code: '25CF', indent: 15}, breakLine: j < pts.length - 1, paraSpaceAfter: 6}})),
+      {x: x + 0.3, y: 3.45, w: 3.4, h: 1.85, fontFace: F, fontSize: 12.5, color: TEAL, margin: 0, valign: 'top'});
+  });
+  s.addText([
+    {text: 'Build agent grants on: ', options: {bold: true, color: COP}},
+    {text: 'RFC 8693 token exchange ("act")', options: {color: SKY, hyperlink: {url: 'https://www.rfc-editor.org/rfc/rfc8693.html'}}},
+    {text: ' · ', options: {color: MUTED}},
+    {text: 'RFC 9396 rich authorization', options: {color: SKY, hyperlink: {url: 'https://www.rfc-editor.org/rfc/rfc9396.html'}}},
+    {text: ' · ', options: {color: MUTED}},
+    {text: 'OpenID CIBA', options: {color: SKY, hyperlink: {url: 'https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html'}}},
+    {text: ' for step-up · ', options: {color: MUTED}},
+    {text: 'MCP authorization', options: {color: SKY, hyperlink: {url: 'https://modelcontextprotocol.io/specification/latest/basic/authorization'}}},
+  ], {x: 0.6, y: 6.45, w: 12.13, h: 0.4, fontFace: F, fontSize: 12, margin: 0, valign: 'middle'});
+  s.addShape(pptx.ShapeType.roundRect, {x: 0.6, y: 5.5, w: 12.13, h: 0.6, rectRadius: 0.08, fill: {color: ACC}, line: {color: ACC}});
+  s.addText([{text: 'Wallet mandates are for legal entities. ', options: {bold: true, color: TEAL}}, {text: 'Agents get standard OAuth grants, behind the same grant, scope and withdraw screens.', options: {color: TEAL}}], {x: 0.85, y: 5.5, w: 11.7, h: 0.6, fontFace: F, fontSize: 14, margin: 0, valign: 'middle'});
+  s.addNotes('Delegated authority in the wallet is for legal entities that hold a wallet: people and organisations who can accept a mandate and be accountable for it. AI agents are different. They are tools acting for you, not legal representatives, so they should not receive a PID-bound mandate and liability stays with the person. The implementation should use OAuth-family standards: token exchange with an act claim, rich authorization requests for detailed scopes, CIBA to send high-risk actions back to the user for approval, and OAuth 2.1 as used by MCP. But the user experience should be the same one people learn for granting access to Alice: choose who, tick what they can and cannot do, set a time limit, see an activity log, withdraw at any time. Agents also need extra controls: rate and value limits, a maximum depth if they hand work to other agents, and actions that only a human can take, such as voting or consent to treatment.');
+}
+
+{
   const s = base('Prototype', 'Testing it: a Paradym Wallet prototype', {draft: true});
   const ph = [['0', 'Setup', 1], ['1', 'Rulebook draft', 1], ['2', 'Representation issuer', 2], ['3', 'Wallet: receive & show', 2], ['4', 'Verifier & present', 2], ['5', 'Lifecycle & revoke', 1], ['6', 'Minors & care', 2], ['7', 'Evaluate & publish', 1.5]];
   const vw = w => Math.max(w, 1.5), total = ph.reduce((a, p) => a + vw(p[2]), 0), W = 12.13;

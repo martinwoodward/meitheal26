@@ -72,3 +72,10 @@ All sources cited in the [deck](Digital-Wallets-Delegated-Authority-Meitheal-202
 ## Code
 
 - [animo/paradym-wallet](https://github.com/animo/paradym-wallet) (Apache-2.0): development wallet for the prototype
+
+## AI agents (authorisation standards)
+
+- [RFC 8693: OAuth 2.0 Token Exchange](https://www.rfc-editor.org/rfc/rfc8693.html) — the `act` (actor) claim for acting on behalf of a user
+- [RFC 9396: OAuth 2.0 Rich Authorization Requests](https://www.rfc-editor.org/rfc/rfc9396.html) — fine-grained scopes
+- [OpenID Connect Client-Initiated Backchannel Authentication (CIBA)](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html) — step-up approval by the user
+- [Model Context Protocol: Authorization](https://modelcontextprotocol.io/specification/latest/basic/authorization) — OAuth 2.1 for agent tool access

@@ -2,7 +2,7 @@
 
 Talk for Digital Meitheal 2026, Day 2 (20 November 2026). Prepared by Martin Woodward ([martin@woodwardweb.com](mailto:martin@woodwardweb.com)).
 
-- **[Slides — PowerPoint](Digital-Wallets-Delegated-Authority-Meitheal-2026.pptx)** (36 slides, embedded autoplaying animations, speaker notes)
+- **[Slides — PowerPoint](Digital-Wallets-Delegated-Authority-Meitheal-2026.pptx)** (37 slides, embedded autoplaying animations, speaker notes)
 - **[Slides — PDF](Digital-Wallets-Delegated-Authority-Meitheal-2026.pdf)**
 
 ## Contents
