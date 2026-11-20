@@ -58,6 +58,8 @@ All sources cited in the [deck](Digital-Wallets-Delegated-Authority-Meitheal-202
 
 ## Elsewhere
 
+- [Cyprus: Digital Citizen app adds minor children's digital ID to parents' app (gov.cy, 20 Aug 2026, in Greek)](https://www.gov.cy/erevna-kainotomia-kai-psifiaki-politiki/psifiakos-politis-psifiaki-taftotita-anilikon-teknon-stin-efarmogi-ton-goneon/)
+- [Cyprus: Presidency announcement (diakivernisi.gov.cy)](https://www.diakivernisi.gov.cy/en/62/624/?ctype=ar)
 - [Australia: Digital ID Act 2024](https://www.legislation.gov.au/C2024A00025/latest/text)
 - [HCCH 1996 Child Protection Convention](https://www.hcch.net/en/instruments/conventions/full-text/?cid=70)
 

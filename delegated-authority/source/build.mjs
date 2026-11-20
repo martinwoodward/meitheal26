@@ -114,7 +114,7 @@ n++;
     ['01', 'How digital wallets work', 'Issuers, holders, verifiers, and sharing only what is needed', 'wallet'],
     ['02', "Ireland's Government Digital Wallet", 'What has been announced and what is still open', 'flag'],
     ['03', 'Government credentials', 'Driving licence, PPS number, health identifiers, signing in', 'id'],
-    ['04', 'Delegation: adults', 'Acting for an elderly parent: lessons from Estonia, Latvia, Australia', 'handshake'],
+    ['04', 'Delegation: adults', 'Acting for an elderly parent: lessons from Estonia, Cyprus, Australia', 'handshake'],
     ['05', 'Delegation: children', 'Guardianship, care orders, migrants: options A–E (draft)', 'baby'],
     ['06', 'Gaps, prototype & discussion', 'Standards changes, a Paradym Wallet prototype, your views', 'message'],
   ];
@@ -361,10 +361,10 @@ section('04', 'Delegation: adults', 'Acting for an elderly parent or someone who
       'Pääsuke: national authorisations register (RIA), used through eesti.ee and GovSSO',
       'Mandates have roles and validity periods; they can be withdrawn, or the agent can step down',
       'Legal representatives of minors come from the population register']],
-    ['LV', 'Latvia', [
-      'Authorisations for some e-services on Latvija.gov.lv',
-      'Limited, service-by-service',
-      'Basic EUDI wallet due by Dec 2026']],
+    ['CY', 'Cyprus', [
+      'Digital Citizen app: since Aug 2026, a parent can hold their child\'s digital ID on their own phone',
+      'Mother and/or father; the physical ID card must already be issued and valid',
+      'From 14, young people can hold their own digital ID']],
     ['AU', 'Australia', [
       'Per-agency nominee arrangements through myGov (Centrelink, ATO)',
       'Digital ID Act 2024; myID from age 15',
@@ -385,7 +385,7 @@ section('04', 'Delegation: adults', 'Acting for an elderly parent or someone who
     {text: 'ARF Discussion Topic I', options: {color: SKY, hyperlink: {url: 'https://eudi.dev/latest/discussion-topics/i-natural-person-representing-another-natural-person/'}}},
     {text: ' explores one person representing another. There is no rulebook yet.', options: {color: TEAL}},
   ], {x: 0.85, y: 5.95, w: 11.7, h: 0.75, fontFace: F, fontSize: 13, margin: 0, valign: 'middle'});
-  s.addNotes('Estonia is the most complete model: a central register with X-Road services, mandates with validity periods, withdrawal by the principal and waiver by the agent. See ria.ee Pääsuke and the e-gov/PH specification on GitHub.');
+  s.addNotes('Estonia is the most complete model: a central register with X-Road services, mandates with validity periods, withdrawal by the principal and waiver by the agent. See ria.ee Pääsuke and the e-gov/PH specification on GitHub. Cyprus shows the children\'s side: since 20 August 2026 the national Digital Citizen app (Psifiakos Politis) lets a mother and/or father add their minor child\'s digital ID card to their own app, provided the child\'s physical ID card has been issued and is valid. From 14, young people can keep their own digital ID on their own phone. It is a national app rather than an EUDI wallet, and it is a copy of the child\'s document rather than a scoped mandate.');
 }
 video('Delegation: adults', 'Proposal: a mandate credential in the wallet', 'Adult', 500,
   'Mary, 82, has an enduring power of attorney registered with the Decision Support Service. A proposed representation attestation provider issues Seán a mandate credential, scoped to pensions and bound to his own PID. Services always see that he is acting as a representative and for what (ARF Topic I). Mary can withdraw it, or Seán can step down, and status lists stop it everywhere.', {draft: true});
@@ -706,6 +706,7 @@ refs('Working systems and proposals', [
     ['GovSSO: representee list', 'https://e-gov.github.io/GOVSSO/Representee'],
   ]],
   ['Elsewhere', [
+    ['Cyprus: child ID in parents\' Digital Citizen app', 'https://www.gov.cy/erevna-kainotomia-kai-psifiaki-politiki/psifiakos-politis-psifiaki-taftotita-anilikon-teknon-stin-efarmogi-ton-goneon/'],
     ['Australia: Digital ID Act 2024', 'https://www.legislation.gov.au/C2024A00025/latest/text'],
     ['HCCH 1996 Child Protection Convention', 'https://www.hcch.net/en/instruments/conventions/full-text/?cid=70'],
   ]],
